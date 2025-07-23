@@ -5,7 +5,7 @@ import DateRangePickerComponent from "./components/DateRangePicker"
 import SelectedTable from "./components/SelectedTable";
 import { useEffect, useState } from "react";
 import { LiaBarcodeSolid } from "react-icons/lia";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setBoxData, setProducts, setScannedProducts } from "./reduxstore/slice";
 import db from "./utils/db";
 import toast from "react-hot-toast";
@@ -41,7 +41,7 @@ function App() {
   }
 
   const fetchTodayScannedData = async () => {
-      //db.scanned_products.clear();  
+    //db.scanned_products.clear();  
     const today = new Date().toISOString().split('T')[0];
     const scannedToday = await getScannedProductsByDate(today);
     if (scannedToday?.length > 0) {
@@ -49,15 +49,51 @@ function App() {
     } else {
       toast.error(`No scanned products found!`);
     }
-  
   };
+
+  const installApp = async () => {
+    toast.custom((t) => (
+      <div
+        className={`${t.visible ? 'animate-enter' : 'animate-leave'
+          } max-w-md w-full mx-2 bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+      >
+        <div className="flex-1 w-0 ">
+          <div className="flex items-start">
+            <div className="flex-shrink-0 pt-0.5">
+              <img
+                className="h-10 w-10 rounded-full"
+                src="/android-chrome-512x512.png"
+                alt=""
+              />
+            </div>
+            <div className="ml-3 flex-1">
+              <p className="mt-1 text-sm text-gray-500">
+                For better user experience !
+              </p>
+              <p className="text-sm font-medium text-gray-900">
+                <InstallButton />
+              </p>
+
+            </div>
+          </div>
+        </div>
+        <div className="flex border-l border-gray-200">
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    ))
+  }
+
 
   useEffect(() => {
     dispatch(setProducts(picklist))
+    installApp()
   }, [])
-  
-
-
 
   return (
     <div className="">
