@@ -10,7 +10,7 @@ import { provideGlobalGridOptions } from 'ag-grid-community';
 provideGlobalGridOptions({ theme: 'legacy' });
 
 createRoot(document.getElementById('root')).render(
-  <div className='mx-6'>
+  <div className='mx-4'>
     <Provider store={store}>
       <Toaster
         position="bottom-center"
