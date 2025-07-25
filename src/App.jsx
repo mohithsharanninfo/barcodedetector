@@ -51,7 +51,6 @@ function App() {
     finally {
       setOpen(false)
     }
-
   }
 
   const fetchTodayScannedData = async () => {

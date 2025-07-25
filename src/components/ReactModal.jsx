@@ -14,7 +14,7 @@ const customStyles = {
         zIndex: 9999
     },
     overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',  // Optional dim background
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         zIndex: 9998
     },
 };
@@ -25,8 +25,6 @@ function ReactModal({ children, modalIsOpen, closeModal }) {
     return (
       <Modal
             isOpen={modalIsOpen}
-            // onAfterOpen={afterOpenModal}
-            //onRequestClose={closeModal}
             style={customStyles}
             contentLabel="Example Modal"
         >
