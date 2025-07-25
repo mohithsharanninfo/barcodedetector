@@ -162,9 +162,9 @@ function App() {
           </div>
 
           <div className="flex flex-row gap-x-2 text-[#614119]">
-            <p className="font-bold">Total:&nbsp;{productData?.length}</p>{','}
-            <p className="font-bold">Pending:&nbsp;{productData?.length - scannedProducts?.length}</p>{','}
-            <p className="font-bold">Picked:&nbsp;{scannedProducts?.length}</p>{','}
+            <p className="font-bold">Total:&nbsp;{productData?.length}</p>{'|'}
+            <p className="font-bold">Pending:&nbsp;{productData?.length - scannedProducts?.length}</p>{'|'}
+            <p className="font-bold">Picked:&nbsp;{scannedProducts?.length}</p>
           </div>
 
           <div className="flex items-center justify-center lg:my-5">
