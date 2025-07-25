@@ -14,8 +14,11 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <Toaster
         position="bottom-center"
+        toastOptions={{
+          duration: 1000
+        }}
       />
       <App />
     </Provider>
-  </div>,
+  </div>
 )
