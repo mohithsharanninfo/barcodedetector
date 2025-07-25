@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import axios from 'axios'
 import { BASE_URL } from "./constant";
 import ReactModal from "./components/ReactModal";
+import { useForm } from 'react-hook-form';
 
 
 function App() {
@@ -19,32 +20,32 @@ function App() {
   const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
   const deferredPromptRef = useRef(null);
   const [open, setOpen] = useState(true)
-  const [boxdetailsfetch, setBoxDetailsFetch] = useState({
-    branchcode: 'BOS',
-    picklistno: '251215'
-  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   function closeModal() {
     setOpen(false);
   }
 
-  const getBoxDetails = async () => {
+  const onSubmit = async (data) => {
     try {
-      if (!boxdetailsfetch?.branchcode && !boxdetailsfetch?.picklistno) {
-        return toast.error('Please fill all the fields')
-      }
       const response = await axios.post(`${BASE_URL}/Getpicklistsummary`, {
-        branchcode: boxdetailsfetch?.branchcode,
-        picklistno: boxdetailsfetch?.picklistno
+        branchcode: data?.branchcode,
+        picklistno: data?.picklistno
       })
       const result = await response?.data
-      if (response.status == 200 && result?.length > 0) {
-          dispatch(setBoxData(result))
-        toast.success('Picklist Found !')
-      } else {
-        toast.error('Picklist Not Found !')
+      if (response?.status == 200) {
+        dispatch(setBoxData(result))
+        if (result?.length > 0) {
+          toast.success('Picklist Found !')
+        } else {
+          toast.error('Picklist Not Found !')
+        }
       }
-  
     } catch (err) {
       throw new Error(err)
     }
@@ -173,35 +174,53 @@ function App() {
       }
 
       <ReactModal modalIsOpen={open} closeModal={closeModal} >
-        <div className="grid gap-y-5">
+        <form
+          className="grid gap-y-5"
+          onSubmit={handleSubmit(onSubmit)}>
           <div className="w-full">
             <p className="text-[#614119] font-semibold">Enter Branch Code.</p>
-            <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
+            <div className="w-full grid gap-y-1">
               <input
-                value={boxdetailsfetch?.branchcode}
+                id="branchcode"
                 type="text"
-                onChange={(e) => setBoxDetailsFetch({ ...boxdetailsfetch, branchcode: e.target.value })}
-                className="outline-0 uppercase border-0 text-[#614119] font-semibold  w-full"
-                placeholder="Branch code..."
+                placeholder="Branch Code"
+                className={`outline-none border ${errors?.branchcode ? 'border-red-500' : 'border-[#cd9a50]'
+                  }  p-2 rounded-sm `}
+                {...register('branchcode', {
+                  required: 'Branch Code is required',
+                })}
               />
+              {errors?.branchcode && (
+                <p className="text-red-500 text-sm">{errors?.branchcode?.message}</p>
+              )}
             </div>
           </div>
           <div className="w-full">
             <p className="text-[#614119] font-semibold">Enter Picklist No.</p>
-            <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
+            <div className="w-full grid gap-y-1">
               <input
-                value={boxdetailsfetch?.picklistno}
+                id="picklistno"
                 type="text"
-                onChange={(e) => setBoxDetailsFetch({ ...boxdetailsfetch, picklistno: e.target.value })}
-                className="outline-0 uppercase border-0 text-[#614119] font-semibold  w-full"
-                placeholder="Picklist No..."
+                placeholder="Picklist No."
+                className={`outline-none border ${errors?.picklistno ? 'border-red-500' : 'border-[#cd9a50]'
+                  } p-2 rounded-sm`}
+                {...register('picklistno', {
+                  required: 'Picklist No is required',
+                  pattern: {
+                    value: /^[0-9]{6}$/,
+                    message: 'Picklist no. must be 6 digits',
+                  },
+                })}
               />
+              {errors?.picklistno && (
+                <p className="text-red-500 text-sm">{errors?.picklistno?.message}</p>
+              )}
             </div>
           </div>
           <div className="w-full">
-            <button onClick={() => getBoxDetails()} className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>GET PICK LIST DETAILS</button>
+            <button type="submit" className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>Get Picklist Details</button>
           </div>
-        </div>
+        </form>
 
       </ReactModal>
     </div>
@@ -209,3 +228,6 @@ function App() {
 }
 
 export default App
+
+
+//  <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
