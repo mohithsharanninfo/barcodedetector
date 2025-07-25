@@ -1,42 +1,56 @@
 import getScannedProductsByDate from "./api/fetchDexie";
 import AgGridTable from "./components/AgGridTable";
 import BarcodeDetect from "./components/BarcodeDetect";
-import DateRangePickerComponent from "./components/DateRangePicker"
-import SelectedTable from "./components/SelectedTable";
+import Boxdetails from "./components/Boxdetails";
 import { useEffect, useRef, useState } from "react";
 import { LiaBarcodeSolid } from "react-icons/lia";
-import { useDispatch } from "react-redux";
-import { setBoxData, setProducts, setScannedProducts } from "./reduxstore/slice";
+import { useDispatch, useSelector } from "react-redux";
+import { setBoxData, setScannedProducts } from "./reduxstore/slice";
 import db from "./utils/db";
 import toast from "react-hot-toast";
 import axios from 'axios'
 import { BASE_URL } from "./constant";
-import picklist from "./utils/staticData";
-import SelectInput from "./components/SelectInput";
+import ReactModal from "./components/ReactModal";
 
 
 function App() {
   const dispatch = useDispatch()
-  const [view, setView] = useState(false)
-  const [loading, setloading] = useState(true)
+  const productData = useSelector((state) => state?.product?.products);
+  const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
   const deferredPromptRef = useRef(null);
+  const [open, setOpen] = useState(true)
+  const [boxdetailsfetch, setBoxDetailsFetch] = useState({
+    branchcode: 'BOS',
+    picklistno: '251215'
+  })
 
-  const ViewBoxDetails = async () => {
-    setView(!view)
-    setloading(false)
-    // try {
-    //   const response = await axios.post(`${BASE_URL}/Getpicklistsummary`, {
-    //     fromdate: startDate,
-    //     todate: endDate
-    //   })
-    //   const result = await response?.data
+  function closeModal() {
+    setOpen(false);
+  }
 
-    //   dispatch(setBoxData(result))
-    // } catch (err) {
-    //   throw new Error(err)
-    // } finally {
-    //   setloading(false)
-    // }
+  const getBoxDetails = async () => {
+    try {
+      if (!boxdetailsfetch?.branchcode && !boxdetailsfetch?.picklistno) {
+        return toast.error('Please fill all the fields')
+      }
+      const response = await axios.post(`${BASE_URL}/Getpicklistsummary`, {
+        branchcode: boxdetailsfetch?.branchcode,
+        picklistno: boxdetailsfetch?.picklistno
+      })
+      const result = await response?.data
+      if (response.status == 200 && result?.length > 0) {
+          dispatch(setBoxData(result))
+        toast.success('Picklist Found !')
+      } else {
+        toast.error('Picklist Not Found !')
+      }
+  
+    } catch (err) {
+      throw new Error(err)
+    }
+    finally {
+      setOpen(false)
+    }
 
   }
 
@@ -120,59 +134,77 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    dispatch(setProducts(picklist))
-  }, [])
-
   return (
     <div className="">
       <div className="text-center font-semibold lg:mb-10 mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE  DETECTOR</div>
-      <div className=" grid md:flex md:flex-row lg:flex lg:flex-row lg:justify-start   items-center justify-center  lg:gap-10 gap-4" >
-        <div className="w-full">
-          <p className="text-[#614119] font-semibold">Search Box No.</p>
-          <div><SelectInput /></div>
-        </div>
-        <div className="w-full">
-          <label className="text-[#614119] font-semibold">
-            Search | Scan Barcode
-          </label>
-          <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
-            <LiaBarcodeSolid color="#cd9a50" />
-            <BarcodeDetect />
-          </div>
-        </div>
-        <div className="w-full">
-          {view ?
-            <label onClick={() => setView(false)} className="text-[#614119] font-semibold underline cursor-pointer">
-              Close Box Details
-            </label> :
-            <label onClick={() => ViewBoxDetails()} className={`text-[#614119] font-semibold underline cursor-pointer} `}>
-              View Box Details
-            </label>
-          }
-
-        </div>
-      </div>
-      {
-        view && loading ? <p className="text-center text-[#614119]">Loading....</p> :
-          <>
-            {
-              view && !loading &&
-              <div className="flex items-center justify-center lg:my-5 my-4  ">
-                <SelectedTable />
-              </div>
-            }
-          </>
-
-      }
-
-      <div className="flex justify-end w-full">
-        <p className="underline text-[#614119] text-sm cursor-pointer px-1" onClick={() => fetchTodayScannedData()} >Fetch Scanned Products</p>
-      </div>
 
       <div className="flex items-center justify-center lg:my-5  ">
-        <AgGridTable />
+        <Boxdetails setOpen={setOpen} />
       </div>
+
+      {
+        productData?.length > 0 &&
+        <>
+          <div className=" flex my-3" >
+            <div className="w-full">
+
+              <div className="flex justify-between items-center w-full">
+                <label className="text-[#614119] font-semibold">
+                  Search | Scan Barcode
+                </label>
+                <p className="underline text-[#614119] text-sm font-semibold cursor-pointer" onClick={() => fetchTodayScannedData()} >Previous Scanned</p>
+              </div>
+              <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
+                <LiaBarcodeSolid color="#cd9a50" />
+                <BarcodeDetect />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-x-2 text-[#614119]">
+            <p className="font-bold">Total:&nbsp;{productData?.length}</p>{','}
+            <p className="font-bold">Pending:&nbsp;{productData?.length - scannedProducts?.length}</p>{','}
+            <p className="font-bold">Picked:&nbsp;{scannedProducts?.length}</p>{','}
+          </div>
+
+          <div className="flex items-center justify-center lg:my-5">
+            <AgGridTable />
+          </div>
+        </>
+      }
+
+      <ReactModal modalIsOpen={open} closeModal={closeModal} >
+        <div className="grid gap-y-5">
+          <div className="w-full">
+            <p className="text-[#614119] font-semibold">Enter Branch Code.</p>
+            <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
+              <input
+                value={boxdetailsfetch?.branchcode}
+                type="text"
+                onChange={(e) => setBoxDetailsFetch({ ...boxdetailsfetch, branchcode: e.target.value })}
+                className="outline-0 uppercase border-0 text-[#614119] font-semibold  w-full"
+                placeholder="Branch code..."
+              />
+            </div>
+          </div>
+          <div className="w-full">
+            <p className="text-[#614119] font-semibold">Enter Picklist No.</p>
+            <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
+              <input
+                value={boxdetailsfetch?.picklistno}
+                type="text"
+                onChange={(e) => setBoxDetailsFetch({ ...boxdetailsfetch, picklistno: e.target.value })}
+                className="outline-0 uppercase border-0 text-[#614119] font-semibold  w-full"
+                placeholder="Picklist No..."
+              />
+            </div>
+          </div>
+          <div className="w-full">
+            <button onClick={() => getBoxDetails()} className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>GET PICK LIST DETAILS</button>
+          </div>
+        </div>
+
+      </ReactModal>
     </div>
   )
 }

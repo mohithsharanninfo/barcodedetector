@@ -89,7 +89,6 @@ const AgGridTable = () => {
                         pagination={true}
                         paginationPageSize={5}
                         paginationPageSizeSelector={[5, 10, 20, 50, 100]}
-                        // onRowClicked={handleRowClick}
                         getRowClass={(params) => {
                             return params.data.barcode_no === barcode ? 'highlight-row' : scannedProducts?.some(p => p.barcode_no === params?.data?.barcode_no) ? 'highlight-row' : '';
                         }}
@@ -118,18 +117,3 @@ const AgGridTable = () => {
 
 export default AgGridTable;
 
-
-
-// const handleRowClick = (event) => {
-//     const clickedSku = event.data.sku;
-//     const exists = scannedData.some(item => item.sku === clickedSku);
-//     if (exists) {
-//         setScannedData(prev => prev.filter(item => item.sku !== clickedSku));
-//         event.node.setSelected(false);
-//         event.api.refreshCells({
-//             rowNodes: [event.node],
-
-//         });
-//         toast.error(`${clickedSku} deselected!`);
-//     }
-// }

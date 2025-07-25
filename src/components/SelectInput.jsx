@@ -4,7 +4,6 @@ import boxData from '../utils/staticData'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProducts } from '../reduxstore/slice';
-import picklist from '../utils/staticData';
 
 const SelectInput = () => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -41,7 +40,7 @@ const SelectInput = () => {
     const handleChange = (option) => {
         setSelectedOption(option);
         if (!option) {
-            dispatch(setProducts(picklist));
+            //dispatch(setProducts(picklist));
             return;
         }
 
@@ -57,7 +56,7 @@ const SelectInput = () => {
 
     const handleMenuOpen = () => {
         setSelectedOption(null);
-        dispatch(setProducts(picklist));// Clear the selection when user clicks the box
+        //dispatch(setProducts(picklist));// Clear the selection when user clicks the box
     };
 
     return (

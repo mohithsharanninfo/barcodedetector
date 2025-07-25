@@ -2,54 +2,50 @@ import React, { useMemo, useRef, useState } from 'react';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedProducts } from '../reduxstore/slice';
+import { setProducts } from '../reduxstore/slice';
 import toast from 'react-hot-toast';
-import ProductDetails from './ProductDetails';
-import ReactModal from './ReactModal';
+import axios from 'axios';
+import { BASE_URL } from '../constant';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const SelectedTable = () => {
+const Boxdetails = ({setOpen}) => {
     const dispatch = useDispatch();
     const gridRef = useRef(null);
-    const [open, setOpen] = useState(false)
 
     const boxData = useSelector((state) => state?.product?.boxData);
 
     const tableData = useMemo(() => {
         return boxData?.map(item => ({
-            box: item?.box_no,
-            count: item?.barcode_count
+            box_no: item?.box_no,
+            barcode_count: item?.barcode_count,
+            gs_code: item?.gs_code
         }));
     }, [boxData]);
 
-    let subtitle;
 
-
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        subtitle.style.color = '#f00';
-    }
-
-    function closeModal() {
-        setOpen(false);
-    }
-
-
-    const handleViewClick = (box_no) => {
-        const productsDetails = boxData.find(item => item.Box_No === box_no);
-        if (productsDetails) {
-            dispatch(setSelectedProducts(productsDetails));
-            toast.success(`Products for ${box_no} fetched.`);
-            setOpen(!open)
-        } else {
-            toast.error(`Products Not Found!`);
+    const handleViewClick = async () => {
+        try {
+            const response = await axios.post(`${BASE_URL}/Getpicklistdetails`, {
+                branchcode: "BOS",
+                picklistno: "251215"
+            })
+            const result = await response?.data
+            if (response.status == 200 && result?.length > 0) {
+                dispatch(setProducts(result))
+                toast.success('Products Found !')
+            } else {
+                toast.error('Products Not Found !')
+            }
+        } catch (err) {
+            throw new Error(err)
         }
     };
 
     const [colDefs] = useState([
-        { field: "box", headerName: 'Box', flex: 1, minWidth: 100 },
-        { field: "count", headerName: 'Product Count', flex: 1, minWidth: 120 },
+        { field: "box_no", headerName: 'Box', flex: 1, minWidth: 100 },
+        // { field: "gs_code", headerName: 'Gs Code', flex: 1, minWidth: 100 },
+        { field: "barcode_count", headerName: 'Sku Count', flex: 1, minWidth: 100 },
         {
             field: "action",
             headerName: 'Action',
@@ -68,9 +64,12 @@ const SelectedTable = () => {
 
     return (
         <>
-       
             <div className="ag-theme-alpine w-full overflow-x-auto">
-                 <p className='text-end text-[#614119] px-1'>Box count:{boxData?.length}</p>
+                <div className='flex justify-between items-center'>
+                    <p className='text-start text-[#614119] font-semibold px-1'>Box Count:&nbsp;{boxData?.length}</p>
+                    <p onClick={()=>setOpen(true)} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
+                </div>
+
                 <div className='w-full'>
                     <AgGridReact
                         ref={gridRef}
@@ -96,19 +95,8 @@ const SelectedTable = () => {
                     />
                 </div>
             </div>
-
-
-            {
-                open &&
-                <ReactModal modalIsOpen={open} afterOpenModal={afterOpenModal} closeModal={closeModal} >
-
-                    <ProductDetails />
-
-                </ReactModal>
-
-            }
         </>
     );
 };
 
-export default SelectedTable;
+export default Boxdetails;
