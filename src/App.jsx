@@ -20,6 +20,7 @@ function App() {
   const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
   const deferredPromptRef = useRef(null);
   const [open, setOpen] = useState(true)
+  const [isloading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -32,6 +33,7 @@ function App() {
   }
 
   const onSubmit = async (data) => {
+    setIsLoading(true)
     try {
       const response = await axios.post(`${BASE_URL}/Getpicklistsummary`, {
         branchcode: data?.branchcode,
@@ -51,6 +53,7 @@ function App() {
     }
     finally {
       setOpen(false)
+      setIsLoading(false)
     }
   }
 
@@ -218,7 +221,7 @@ function App() {
             </div>
           </div>
           <div className="w-full">
-            <button type="submit" className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>Get Picklist Details</button>
+            <button type="submit" className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>{isloading?'Loading...':'Get Picklist Details'}</button>
           </div>
         </form>
 
@@ -228,6 +231,3 @@ function App() {
 }
 
 export default App
-
-
-//  <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
