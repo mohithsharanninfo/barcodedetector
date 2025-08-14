@@ -22,6 +22,8 @@ function App() {
   const [open, setOpen] = useState(true)
   const [isloading, setIsLoading] = useState(false)
 
+  const picklistNo = useSelector((state) => state?.product?.picklistNo);
+
   const {
     register,
     handleSubmit,
@@ -141,6 +143,9 @@ function App() {
     }
   }
 
+  const picklistScanned = scannedProducts?.filter((item)=>item?.picklistNo == picklistNo)
+
+
   return (
     <div className="">
       <div className="text-center font-semibold lg:mb-10 mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE  DETECTOR</div>
@@ -170,8 +175,8 @@ function App() {
 
           <div className="flex flex-row gap-x-2 text-[#614119]">
             <p className="font-bold">Total:&nbsp;{productData?.length}</p>{'|'}
-            <p className="font-bold">Pending:&nbsp;{productData?.length - scannedProducts?.length}</p>{'|'}
-            <p className="font-bold">Picked:&nbsp;{scannedProducts?.length}</p>
+            <p className="font-bold">Pending:&nbsp;{productData?.length - picklistScanned?.length}</p>{'|'}
+            <p className="font-bold">Picked:&nbsp;{picklistScanned?.length}</p>
           </div>
 
           <div className="flex items-center justify-center lg:my-5">

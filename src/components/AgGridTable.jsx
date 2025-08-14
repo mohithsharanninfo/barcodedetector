@@ -16,6 +16,7 @@ const AgGridTable = () => {
     const barcode = useSelector((state) => state?.product?.scannedBarcode);
     const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
     const productData = useSelector((state) => state?.product?.products);
+    const picklistNo = useSelector((state) => state?.product?.picklistNo);
 
     const [colDefs] = useState([
         { field: "barcode_no", headerName: 'Sku', flex: 1, minWidth: 100 },
@@ -29,9 +30,8 @@ const AgGridTable = () => {
         let rows = productData?.find((item) => item?.barcode_no === barcode)
 
         if (rows) {
-            dispatch(setScannedProducts(rows))
+            dispatch(setScannedProducts({ ...rows, picklistNo }));
         }
-
         const api = gridRef.current.api;
 
         // 1️⃣ Find the index of the target row
@@ -102,10 +102,8 @@ const AgGridTable = () => {
                         domLayout="autoHeight"
                     />
                 </div>
-                <div className="flex flex-row justify-end mt-2">
-                    <div className="flex flex-row justify-end my-5">
-                        <ExportToPdf />
-                    </div>
+                <div className=" mt-2">                   
+                        <ExportToPdf />                
 
                 </div>
             </div>
