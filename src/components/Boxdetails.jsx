@@ -9,7 +9,7 @@ import { BASE_URL } from '../constant';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const Boxdetails = ({setOpen}) => {
+const Boxdetails = ({ setOpen }) => {
     const dispatch = useDispatch();
     const gridRef = useRef(null);
 
@@ -66,10 +66,15 @@ const Boxdetails = ({setOpen}) => {
         <>
             <div className="ag-theme-alpine w-full overflow-x-auto">
                 <div className='flex justify-between items-center'>
+                    <p className='text-start text-[#614119] font-semibold px-1 my-3'>Picklist No:</p>
+                    <input readOnly placeholder='Picklist' className='text-center border font-bold cursor-not-allowed  border-[#614119] py-1 bg-gray-300 outline-none' value={payload?.picklistNo} />
+                </div>
+
+                <div className='flex justify-between items-center my-2'>
                     <p className='text-start text-[#614119] font-semibold px-1'>Box Count:&nbsp;{boxData?.length}</p>
                     <p onClick={() => {
                         setOpen(true)
-                         dispatch(setProducts([]))
+                        dispatch(setProducts([]))
                     }} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
                 </div>
 
