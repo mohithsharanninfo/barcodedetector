@@ -197,7 +197,7 @@ function App() {
                 id="branchcode"
                 type="text"
                 placeholder="Branch Code"
-                className={`outline-none border ${errors?.branchcode ? 'border-red-500' : 'border-[#cd9a50]'
+                className={`outline-none border text-[#614119] ${errors?.branchcode ? 'border-red-500' : 'border-[#cd9a50]'
                   }  p-2 rounded-sm `}
                 {...register('branchcode', {
                   required: 'Branch Code is required',
@@ -215,7 +215,7 @@ function App() {
                 id="picklistno"
                 type="text"
                 placeholder="Picklist No."
-                className={`outline-none border ${errors?.picklistno ? 'border-red-500' : 'border-[#cd9a50]'
+                className={`outline-none text-[#614119] border ${errors?.picklistno ? 'border-red-500' : 'border-[#cd9a50]'
                   } p-2 rounded-sm`}
                 {...register('picklistno', {
                   required: 'Picklist No is required',
