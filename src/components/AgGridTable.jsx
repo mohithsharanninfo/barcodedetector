@@ -55,7 +55,7 @@ const AgGridTable = () => {
                         const currentTime = new Date().toISOString().split('T')[0];
 
                         db.scanned_products?.add({
-                            data: rows,
+                            data: { ...rows, picklistNo },
                             dateTime: currentTime
                         });
 

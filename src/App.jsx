@@ -36,7 +36,7 @@ function App() {
 
   const onSubmit = async (data) => {
     setIsLoading(true)
-  
+
     dispatch(setPicklistNo(data?.picklistno))
     dispatch(setBranchCode(data?.branchcode))
 
@@ -67,8 +67,9 @@ function App() {
     //db.scanned_products.clear();  
     const today = new Date().toISOString().split('T')[0];
     const scannedToday = await getScannedProductsByDate(today);
-    if (scannedToday?.length > 0) {
-      scannedToday.map((item) => dispatch(setScannedProducts(item?.data)))
+    const filterPicklist = scannedToday?.filter((item) => item?.data?.picklistNo == picklistNo)
+    if (filterPicklist?.length > 0) {
+      filterPicklist.map((item) => dispatch(setScannedProducts(item?.data)))
     } else {
       toast.error(`No scanned products found!`);
     }
@@ -143,7 +144,7 @@ function App() {
     }
   }
 
-  const picklistScanned = scannedProducts?.filter((item)=>item?.picklistNo == picklistNo)
+  const picklistScanned = scannedProducts?.filter((item) => item?.picklistNo == picklistNo)
 
 
   return (
@@ -164,7 +165,7 @@ function App() {
                 <label className="text-[#614119] font-semibold">
                   Search | Scan Barcode
                 </label>
-                {/* <p className="underline text-[#614119] text-sm font-semibold cursor-pointer" onClick={() => fetchTodayScannedData()} >Previous Scanned</p> */}
+                <p className="underline text-[#614119] text-sm font-semibold cursor-pointer" onClick={() => fetchTodayScannedData()} >Previous Scanned</p>
               </div>
               <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
                 <LiaBarcodeSolid color="#cd9a50" />
@@ -230,7 +231,7 @@ function App() {
             </div>
           </div>
           <div className="w-full">
-            <button type="submit" className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>{isloading?'Loading...':'Get Picklist Details'}</button>
+            <button type="submit" className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm cursor-pointer `}>{isloading ? 'Loading...' : 'Get Picklist Details'}</button>
           </div>
         </form>
 
