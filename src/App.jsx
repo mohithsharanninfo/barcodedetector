@@ -5,7 +5,7 @@ import Boxdetails from "./components/Boxdetails";
 import { useEffect, useRef, useState } from "react";
 import { LiaBarcodeSolid } from "react-icons/lia";
 import { useDispatch, useSelector } from "react-redux";
-import { setBoxData, setScannedProducts } from "./reduxstore/slice";
+import { setBoxData, setBranchCode, setPicklistNo, setScannedProducts } from "./reduxstore/slice";
 import db from "./utils/db";
 import toast from "react-hot-toast";
 import axios from 'axios'
@@ -34,6 +34,10 @@ function App() {
 
   const onSubmit = async (data) => {
     setIsLoading(true)
+  
+    dispatch(setPicklistNo(data?.picklistno))
+    dispatch(setBranchCode(data?.branchcode))
+
     try {
       const response = await axios.post(`${BASE_URL}/Getpicklistsummary`, {
         branchcode: data?.branchcode,

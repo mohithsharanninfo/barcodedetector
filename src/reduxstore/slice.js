@@ -5,7 +5,9 @@ const initialState = {
   selectedProducts: null,
   scannedProducts: [],
   boxData: [],
-  products: []
+  products: [],
+  picklistNo: '',
+  branchcode: 'BOS'
 };
 
 const productSlice = createSlice({
@@ -19,7 +21,7 @@ const productSlice = createSlice({
     setSelectedProducts: (state, action) => {
       state.selectedProducts = action.payload;
     },
-    
+
     setScannedProducts: (state, action) => {
       const exists = state?.scannedProducts?.some(p => p.barcode_no === action.payload.barcode_no);
       if (!exists) {
@@ -33,9 +35,23 @@ const productSlice = createSlice({
     setProducts: (state, action) => {
       state.products = action.payload;
     },
+    setPicklistNo: (state, action) => {
+      state.picklistNo = action.payload;
+    },
+    setBranchCode: (state, action) => {
+      state.branchcode = action.payload;
+    },
   },
 });
 
-export const { setScannedBarcode, setSelectedProducts, setScannedProducts, setBoxData, setProducts } = productSlice.actions;
+export const {
+  setScannedBarcode,
+  setSelectedProducts,
+  setScannedProducts,
+  setBoxData,
+  setProducts,
+  setPicklistNo,
+  setBranchCode
+} = productSlice.actions;
 
 export default productSlice.reducer;

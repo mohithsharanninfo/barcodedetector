@@ -14,6 +14,7 @@ const Boxdetails = ({setOpen}) => {
     const gridRef = useRef(null);
 
     const boxData = useSelector((state) => state?.product?.boxData);
+    const payload = useSelector((state) => state?.product);
 
     const tableData = useMemo(() => {
         return boxData?.map(item => ({
@@ -27,8 +28,8 @@ const Boxdetails = ({setOpen}) => {
     const handleViewClick = async () => {
         try {
             const response = await axios.post(`${BASE_URL}/Getpicklistdetails`, {
-                branchcode: "BOS",
-                picklistno: "251215"
+                branchcode: payload?.branchcode,
+                picklistno: payload?.picklistNo
             })
             const result = await response?.data
             if (response.status == 200 && result?.length > 0) {
@@ -42,9 +43,8 @@ const Boxdetails = ({setOpen}) => {
         }
     };
 
-    const [colDefs] = useState([
+    const colDefs = useMemo(() => [
         { field: "box_no", headerName: 'Box', flex: 1, minWidth: 100 },
-        // { field: "gs_code", headerName: 'Gs Code', flex: 1, minWidth: 100 },
         { field: "barcode_count", headerName: 'Sku Count', flex: 1, minWidth: 100 },
         {
             field: "action",
@@ -53,21 +53,21 @@ const Boxdetails = ({setOpen}) => {
             minWidth: 120,
             cellRenderer: (params) => (
                 <button
-                    onClick={() => handleViewClick(params?.data?.box)}
+                    onClick={() => handleViewClick()}
                     className="bg-[#cd9a50] text-black px-3 py-1 rounded"
                 >
                     View
                 </button>
             )
         }
-    ]);
+    ], [payload?.branchcode, payload?.picklistNo]);
 
     return (
         <>
             <div className="ag-theme-alpine w-full overflow-x-auto">
                 <div className='flex justify-between items-center'>
                     <p className='text-start text-[#614119] font-semibold px-1'>Box Count:&nbsp;{boxData?.length}</p>
-                    <p onClick={()=>setOpen(true)} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
+                    <p onClick={() => setOpen(true)} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
                 </div>
 
                 <div className='w-full'>
