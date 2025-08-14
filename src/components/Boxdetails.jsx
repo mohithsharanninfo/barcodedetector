@@ -50,14 +50,14 @@ const Boxdetails = ({ setOpen }) => {
             field: "action",
             headerName: 'Action',
             flex: 1,
-            minWidth: 120,
+            minWidth: 130,
             cellRenderer: (params) => (
                 <button
                  disabled={true}
                     //onClick={() => handleViewClick()}
-                    className="bg-[#cd9a50] opacity-50 text-black px-3 py-1 rounded cursor-not-allowed"              
+                    className="bg-[#cd9a50] opacity-50 text-black px-2 text-sm py-1 rounded cursor-not-allowed"              
                 >
-                    View
+                   View Box
                 </button>
             )
         }
