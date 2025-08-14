@@ -25,23 +25,23 @@ const Boxdetails = ({ setOpen }) => {
     }, [boxData]);
 
 
-    const handleViewClick = async () => {
-        try {
-            const response = await axios.post(`${BASE_URL}/Getpicklistdetails`, {
-                branchcode: payload?.branchcode,
-                picklistno: payload?.picklistNo
-            })
-            const result = await response?.data
-            if (response.status == 200 && result?.length > 0) {
-                dispatch(setProducts(result))
-                toast.success('Products Found !')
-            } else {
-                toast.error('Products Not Found !')
-            }
-        } catch (err) {
-            throw new Error(err)
-        }
-    };
+    // const handleViewClick = async () => {
+    //     try {
+    //         const response = await axios.post(`${BASE_URL}/Getpicklistdetails`, {
+    //             branchcode: payload?.branchcode,
+    //             picklistno: payload?.picklistNo
+    //         })
+    //         const result = await response?.data
+    //         if (response.status == 200 && result?.length > 0) {
+    //             dispatch(setProducts(result))
+    //             toast.success('Products Found !')
+    //         } else {
+    //             toast.error('Products Not Found !')
+    //         }
+    //     } catch (err) {
+    //         throw new Error(err)
+    //     }
+    // };
 
     const colDefs = useMemo(() => [
         { field: "box_no", headerName: 'Box', flex: 1, minWidth: 100 },
@@ -53,8 +53,9 @@ const Boxdetails = ({ setOpen }) => {
             minWidth: 120,
             cellRenderer: (params) => (
                 <button
-                    onClick={() => handleViewClick()}
-                    className="bg-[#cd9a50] text-black px-3 py-1 rounded"
+                 disabled={true}
+                    //onClick={() => handleViewClick()}
+                    className="bg-[#cd9a50] opacity-50 text-black px-3 py-1 rounded cursor-not-allowed"              
                 >
                     View
                 </button>

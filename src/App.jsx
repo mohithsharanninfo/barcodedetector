@@ -5,7 +5,7 @@ import Boxdetails from "./components/Boxdetails";
 import { useEffect, useRef, useState } from "react";
 import { LiaBarcodeSolid } from "react-icons/lia";
 import { useDispatch, useSelector } from "react-redux";
-import { setBoxData, setBranchCode, setPicklistNo, setScannedProducts } from "./reduxstore/slice";
+import { setBoxData, setBranchCode, setPicklistNo, setProducts, setScannedProducts } from "./reduxstore/slice";
 import db from "./utils/db";
 import toast from "react-hot-toast";
 import axios from 'axios'
@@ -21,8 +21,9 @@ function App() {
   const deferredPromptRef = useRef(null);
   const [open, setOpen] = useState(true)
   const [isloading, setIsLoading] = useState(false)
+  const [lineItem, setLineItem] = useState(0)
 
-  const picklistNo = useSelector((state) => state?.product?.picklistNo);
+  const payload = useSelector((state) => state?.product);
 
   const {
     register,
@@ -48,6 +49,18 @@ function App() {
       const result = await response?.data
       if (response?.status == 200) {
         dispatch(setBoxData(result))
+
+        if (result?.length > 1) {
+          const lineItem = result.reduce((acc, crr) => {
+            return acc?.barcode_count + crr?.barcode_count
+          })
+          setLineItem(lineItem)
+        } else if (result?.length > 0 && result?.length == 1) {
+          setLineItem(1)
+        } else {
+          setLineItem(0)
+        }
+
         if (result?.length > 0) {
           toast.success('Picklist Found !')
         } else {
@@ -67,11 +80,29 @@ function App() {
     //db.scanned_products.clear();  
     const today = new Date().toISOString().split('T')[0];
     const scannedToday = await getScannedProductsByDate(today);
-    const filterPicklist = scannedToday?.filter((item) => item?.data?.picklistNo == picklistNo)
+    const filterPicklist = scannedToday?.filter((item) => item?.data?.picklistNo == payload?.picklistNo)
     if (filterPicklist?.length > 0) {
       filterPicklist.map((item) => dispatch(setScannedProducts(item?.data)))
     } else {
       toast.error(`No scanned products found!`);
+    }
+  };
+
+  const handleViewClick = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/Getpicklistdetails`, {
+        branchcode: payload?.branchcode,
+        picklistno: payload?.picklistNo
+      })
+      const result = await response?.data
+      if (response.status == 200 && result?.length > 0) {
+        dispatch(setProducts(result))
+        toast.success('Products Found !')
+      } else {
+        toast.error('Products Not Found !')
+      }
+    } catch (err) {
+      throw new Error(err)
     }
   };
 
@@ -144,16 +175,24 @@ function App() {
     }
   }
 
-  const picklistScanned = scannedProducts?.filter((item) => item?.picklistNo == picklistNo)
+  const picklistScanned = scannedProducts?.filter((item) => item?.picklistNo == payload?.picklistNo)
 
 
   return (
     <div className="">
       <div className="text-center font-semibold lg:mb-10 mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE  DETECTOR</div>
 
-      <div className="flex items-center justify-center lg:my-5 my-8  ">
+      <div className="flex items-center justify-center lg:my-5 mt-8 mb-4  ">
         <Boxdetails setOpen={setOpen} />
       </div>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-[#614119] font-semibold">Total Line Items:&nbsp;{lineItem} </p>
+        <p onClick={() => handleViewClick()} className="text-[#614119] underline font-bold cursor-pointer">View Line Items </p>
+      </div>
+
+      {productData?.length > 0 ?
+        <div className="text-center font-semibold lg:mb-10 mb-4 text-SM text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl ">LINE ITEMS LIST</div>
+        : <hr className="text-[#614119]"/>}
 
       {
         productData?.length > 0 &&
