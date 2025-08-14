@@ -67,7 +67,10 @@ const Boxdetails = ({setOpen}) => {
             <div className="ag-theme-alpine w-full overflow-x-auto">
                 <div className='flex justify-between items-center'>
                     <p className='text-start text-[#614119] font-semibold px-1'>Box Count:&nbsp;{boxData?.length}</p>
-                    <p onClick={() => setOpen(true)} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
+                    <p onClick={() => {
+                        setOpen(true)
+                         dispatch(setProducts([]))
+                    }} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
                 </div>
 
                 <div className='w-full'>
