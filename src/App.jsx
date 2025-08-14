@@ -159,7 +159,7 @@ function App() {
                 <label className="text-[#614119] font-semibold">
                   Search | Scan Barcode
                 </label>
-                <p className="underline text-[#614119] text-sm font-semibold cursor-pointer" onClick={() => fetchTodayScannedData()} >Previous Scanned</p>
+                {/* <p className="underline text-[#614119] text-sm font-semibold cursor-pointer" onClick={() => fetchTodayScannedData()} >Previous Scanned</p> */}
               </div>
               <div className="flex items-center gap-2 py-2 pl-1 border border-[#cd9a50]  rounded cursor-pointer">
                 <LiaBarcodeSolid color="#cd9a50" />
