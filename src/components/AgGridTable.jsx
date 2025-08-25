@@ -90,8 +90,15 @@ const AgGridTable = () => {
                         paginationPageSize={5}
                         paginationPageSizeSelector={[5, 10, 20, 50, 100]}
                         getRowClass={(params) => {
-                            return params.data.barcode_no === barcode ? 'highlight-row' : scannedProducts?.some(p => p.barcode_no === params?.data?.barcode_no) ? 'highlight-row' : '';
+                            const rowBarcode = params?.data?.barcode_no;
+                            if (!rowBarcode) return ''; // <-- don't highlight if barcode is missing
+                            if (rowBarcode === barcode) return 'highlight-row';
+                            if (scannedProducts?.some(p => p.barcode_no === rowBarcode)) return 'highlight-row';
+                            return '';
                         }}
+                        // getRowClass={(params) => {
+                        //     return params.data.barcode_no === barcode ? 'highlight-row' : scannedProducts?.some(p => p.barcode_no === params?.data?.barcode_no) ? 'highlight-row' : '';
+                        // }}
                         defaultColDef={{
                             resizable: false,
                             sortable: false,
@@ -102,8 +109,8 @@ const AgGridTable = () => {
                         domLayout="autoHeight"
                     />
                 </div>
-                <div className=" mt-2">                   
-                        <ExportToPdf />                
+                <div className=" mt-2">
+                    <ExportToPdf />
 
                 </div>
             </div>
