@@ -51,9 +51,9 @@ function App() {
         dispatch(setBoxData(result))
 
         if (result?.length > 1) {
-          const lineItem = result.reduce((acc, crr) => {
-            return acc?.barcode_count + crr?.barcode_count
-          })
+          const lineItem = result?.reduce((acc, curr) => {
+            return acc + (curr?.barcode_count || 0);
+          }, 0);
           setLineItem(lineItem)
         } else if (result?.length > 0 && result?.length == 1) {
           setLineItem(1)
