@@ -57,7 +57,7 @@ const Boxdetails = ({ setOpen }) => {
                     //onClick={() => handleViewClick()}
                     className="bg-[#cd9a50] opacity-50 text-black px-2 text-sm py-1 rounded cursor-not-allowed"              
                 >
-                   View Box
+                   View
                 </button>
             )
         }
