@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
-import { setScannedBarcode } from "../reduxstore/slice";
+import { setBracodeRender, setScannedBarcode } from "../reduxstore/slice";
 
 function BarcodeDetect() {
     const dispatch = useDispatch()
@@ -14,6 +14,7 @@ function BarcodeDetect() {
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             dispatch(setScannedBarcode(barcode));
+            dispatch(setBracodeRender(barcode + "_" + Date.now()));
             setBarcode("");
             inputRef.current.focus();
         }

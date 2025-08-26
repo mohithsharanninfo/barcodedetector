@@ -14,6 +14,7 @@ const AgGridTable = () => {
     const gridRef = useRef();
     const dispatch = useDispatch()
     const barcode = useSelector((state) => state?.product?.scannedBarcode);
+    const rerender = useSelector((state) => state?.product?.barcodeRender);
     const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
     const productData = useSelector((state) => state?.product?.products);
     const picklistNo = useSelector((state) => state?.product?.picklistNo);
@@ -72,7 +73,9 @@ const AgGridTable = () => {
             new Audio('/error.mp3').play();
             toast.error(`Product Not Found!`);
         }
-    }, [barcode]);
+    }, [barcode, rerender]);
+
+
 
     return (
         <>
