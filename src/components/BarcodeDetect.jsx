@@ -6,6 +6,7 @@ function BarcodeDetect() {
     const dispatch = useDispatch()
     const [barcode, setBarcode] = useState("");
     const inputRef = useRef(null);
+    const [isFocused, setIsFocused] = useState(true);
 
     useEffect(() => {
         inputRef.current.focus();
@@ -28,8 +29,11 @@ function BarcodeDetect() {
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="outline-0 border-0 text-[#614119] font-semibold  w-full"
-                placeholder="Barcode..."
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                className={`outline-0 border-2 w-full font-semibold text-[#614119] 
+              ${isFocused ? "border-transparent" : "border-red-500"}`}
+                placeholder={isFocused ? "Barcode..." : "Click to focus before scanning"}
             />
         </div>
     );

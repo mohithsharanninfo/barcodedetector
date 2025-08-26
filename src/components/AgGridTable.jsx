@@ -71,7 +71,7 @@ const AgGridTable = () => {
             }, 100);
         } else {
             new Audio('/error.mp3').play();
-            toast.error(`Product Not Found!`);
+            toast.error(`${barcode} Product Not Found!`);
         }
     }, [barcode, rerender]);
 

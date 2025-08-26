@@ -97,7 +97,7 @@ function App() {
       const result = await response?.data
       if (response.status == 200 && result?.length > 0) {
         dispatch(setProducts(result))
-        toast.success('Products Found !')
+        // toast.success('Products Found !')
       } else {
         toast.error('Products Not Found !')
       }
