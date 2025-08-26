@@ -31,9 +31,9 @@ function BarcodeDetect() {
                 onKeyDown={handleKeyDown}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                className={`outline-0 border-2 w-full font-semibold text-[#614119] 
-              ${isFocused ? "border-transparent" : "border-red-500"}`}
-                placeholder={isFocused ? "Barcode..." : "Click to focus before scanning"}
+                className={`outline-0 border-0 w-full font-semibold text-[#614119] 
+              ${isFocused ? "placeholder-gray-400" : "placeholder-red-500"}`}
+                placeholder={isFocused ? "Barcode..." : "*Click to focus before scanning"}
             />
         </div>
     );
