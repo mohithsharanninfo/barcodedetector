@@ -187,7 +187,13 @@ function App() {
       </div>
       <div className="flex justify-between items-center mb-4">
         <p className="text-[#614119] font-semibold">Total Line Items:&nbsp;{lineItem} </p>
-        <p onClick={() => handleViewClick()} className="text-[#614119] underline font-bold cursor-pointer">View Line Items </p>
+              <button
+              onClick={() => handleViewClick()}
+                    className="bg-[#cd9a50]  text-black px-2 text-sm font-semibold py-1 rounded "              
+                >
+                   View Items
+                </button>
+        {/* <p onClick={() => handleViewClick()} className="text-[#614119] underline font-bold cursor-pointer">View Line Items </p> */}
       </div>
 
       {productData?.length > 0 ?
