@@ -15,7 +15,7 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin http://gitlab.sarayu.com/gagannayak/barcode-scanner.git
+git remote add origin http://gitlab.sarayu.com/ecom/barcode-scanner.git
 git branch -M main
 git push -uf origin main
 ```
