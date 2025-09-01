@@ -13,9 +13,13 @@ createRoot(document.getElementById('root')).render(
   <div className='mx-3 lg:mx-28 '>
     <Provider store={store}>
       <Toaster
-        position="bottom-center"
+        position="top-center"
         toastOptions={{
-          duration: 1500
+          duration: 1500,
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
         }}
       />
       <App />
