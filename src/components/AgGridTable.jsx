@@ -18,6 +18,7 @@ const AgGridTable = () => {
     const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
     const productData = useSelector((state) => state?.product?.products);
     const picklistNo = useSelector((state) => state?.product?.picklistNo);
+    const [scanCount, setScanCount] = useState(0);
 
     const [colDefs] = useState([
         { field: "barcode_no", headerName: 'Sku', flex: 1, minWidth: 100 },
@@ -25,6 +26,37 @@ const AgGridTable = () => {
         { field: "item_name", headerName: 'Item', flex: 1, minWidth: 100 },
         { field: "box_no", headerName: 'Box', flex: 1, minWidth: 100 },
     ]);
+
+
+    /////////REQUIRED IF WE WANT TO MOVE THE SCANNED ROW TO TOP //////////
+
+    // const moveRowToTop = (barcode) => {
+    //     const rowNode = gridRef.current.api.getRowNode(barcode);
+    //     if (rowNode) {
+    //         const data = rowNode.data;
+    //         gridRef.current.api.applyTransaction({ remove: [data] });
+    //         gridRef.current.api.applyTransaction({ add: [data], addIndex: 0 });
+    //     }
+    // };
+
+
+
+    const moveRowToTop = (barcode) => {
+        const rowNode = gridRef.current.api.getRowNode(barcode);
+        if (rowNode) {
+            const data = rowNode.data;
+
+            // Remove row from current position
+            gridRef.current.api.applyTransaction({ remove: [data] });
+
+            // Insert at the "next scanned position"
+            gridRef.current.api.applyTransaction({ add: [data], addIndex: scanCount });
+
+            // Increment counter for next scan
+           setScanCount((prev)=> prev + 1);
+        }
+    };
+
 
     useEffect(() => {
         if (!barcode || !gridRef.current?.api) return;
@@ -54,7 +86,7 @@ const AgGridTable = () => {
 
                     if (!exists) {
                         const currentTime = new Date().toISOString().split('T')[0];
-
+                        moveRowToTop(barcode);
                         db.scanned_products?.add({
                             data: { ...rows, picklistNo },
                             dateTime: currentTime
@@ -113,7 +145,6 @@ const AgGridTable = () => {
                 </div>
                 <div className=" mt-2">
                     <ExportToPdf />
-
                 </div>
             </div>
 
