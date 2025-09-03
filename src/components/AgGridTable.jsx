@@ -22,8 +22,8 @@ const AgGridTable = () => {
     const [colDefs] = useState([
         { field: "barcode_no", headerName: 'Sku', flex: 1, minWidth: 100 },
         { field: "gs_code", headerName: 'GS Code', flex: 1, minWidth: 100 },
-        { field: "item_name", headerName: 'Item', flex: 1, minWidth: 80 },
-        { field: "box_no", headerName: 'Box', flex: 1, minWidth: 80 },
+        { field: "item_name", headerName: 'Item', flex: 1, minWidth: 100 },
+        { field: "box_no", headerName: 'Box', flex: 1, minWidth: 100 },
     ]);
 
     useEffect(() => {
@@ -76,7 +76,6 @@ const AgGridTable = () => {
     }, [barcode, rerender]);
 
 
-
     return (
         <>
 
@@ -84,13 +83,13 @@ const AgGridTable = () => {
                 <div className='w-full '>
                     <AgGridReact
                         ref={gridRef}
-                        rowHeight={50}
+                        rowHeight={35}
                         rowData={productData}
                         columnDefs={colDefs}
-                        rowSelection={{ type: 'single' }}
+                        //rowSelection={{ type: 'single' }}
                         getRowId={(params) => params.data.barcode_no}
                         pagination={true}
-                        paginationPageSize={5}
+                        paginationPageSize={10}
                         paginationPageSizeSelector={[5, 10, 20, 50, 100]}
                         getRowClass={(params) => {
                             const rowBarcode = params?.data?.barcode_no;

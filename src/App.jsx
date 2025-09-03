@@ -12,6 +12,7 @@ import axios from 'axios'
 import { BASE_URL } from "./constant";
 import ReactModal from "./components/ReactModal";
 import { useForm } from 'react-hook-form';
+import { FaHandPointRight } from "react-icons/fa";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   const deferredPromptRef = useRef(null);
   const [open, setOpen] = useState(true)
   const [isloading, setIsLoading] = useState(false)
+  const [detailsLoading, setDetailsLoading] = useState(false)
   const [lineItem, setLineItem] = useState(0)
 
   const payload = useSelector((state) => state?.product);
@@ -89,6 +91,7 @@ function App() {
   };
 
   const handleViewClick = async () => {
+    setDetailsLoading(true)
     try {
       const response = await axios.post(`${BASE_URL}/Getpicklistdetails`, {
         branchcode: payload?.branchcode,
@@ -103,6 +106,8 @@ function App() {
       }
     } catch (err) {
       throw new Error(err)
+    } finally {
+      setDetailsLoading(false)
     }
   };
 
@@ -181,19 +186,20 @@ function App() {
   return (
     <div className="">
       <div className="text-center font-semibold lg:mb-10 mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE  DETECTOR</div>
-
       <div className="flex items-center justify-center lg:my-5 mt-8 mb-4  ">
         <Boxdetails setOpen={setOpen} />
       </div>
       <div className="flex justify-between items-center mb-4">
         <p className="text-[#614119] font-semibold">Total Line Items:&nbsp;{lineItem} </p>
-              <button
-              onClick={() => handleViewClick()}
-                    className="bg-[#cd9a50]  text-black px-2 text-sm font-semibold py-1 rounded "              
-                >
-                   View Items
-                </button>
-        {/* <p onClick={() => handleViewClick()} className="text-[#614119] underline font-bold cursor-pointer">View Line Items </p> */}
+        <div className="flex items-center gap-2 cursor-pointer" >
+          <p className="text-[#614119] font-semibold lg:flex hidden items-center ">Click here &nbsp; <FaHandPointRight /></p>
+          <button
+            onClick={() => handleViewClick()}
+            className="bg-[#cd9a50] text-white  cursor-pointer  px-2 text-sm font-bold py-2 rounded "
+          >
+            {detailsLoading ? "Loading..." : "View Line Items"}
+          </button>
+        </div>
       </div>
 
       {productData?.length > 0 ?

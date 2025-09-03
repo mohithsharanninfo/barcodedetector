@@ -97,3 +97,9 @@ border-top-right-radius: 10px;
 .ag-theme-alpine .ag-row.ag-row-selected .ag-cell {
     border: none !important;
 }
+
+.ag-theme-alpine .ag-cell:focus,
+.ag-theme-alpine .ag-cell:focus-within {
+  outline: none !important;
+  border: none !important;
+}

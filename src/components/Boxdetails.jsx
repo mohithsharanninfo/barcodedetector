@@ -83,13 +83,13 @@ const Boxdetails = ({ setOpen }) => {
                 <div className='w-full'>
                     <AgGridReact
                         ref={gridRef}
-                        rowHeight={50}
+                        rowHeight={35}
                         rowData={tableData}
                         columnDefs={colDefs}
                         pagination={true}
-                        paginationPageSize={5}
+                        paginationPageSize={10}
                         paginationPageSizeSelector={[5, 10, 20, 50, 100]}
-                        rowSelection="single"
+                        //rowSelection="single"
                         defaultColDef={{
                             resizable: false,
                             sortable: false,
