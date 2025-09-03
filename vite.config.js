@@ -10,7 +10,7 @@ const manifestForPlugin = {
 		enabled: true
 	},
 	workbox: {
-		cleanupOutdatedCaches: false
+		cleanupOutdatedCaches: true
 	},
 	includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
 	manifest: {
