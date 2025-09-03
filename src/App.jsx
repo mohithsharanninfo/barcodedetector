@@ -50,7 +50,21 @@ function App() {
       })
       const result = await response?.data
       if (response?.status == 200) {
-        dispatch(setBoxData(result))
+
+        const grouped = Object.values(
+          result.reduce((acc, item) => {
+            if (!acc[item.box_no]) {
+              acc[item.box_no] = {
+                box_no: item.box_no,
+                barcode_count: 0,
+              };
+            }
+            acc[item.box_no].barcode_count += item.barcode_count;
+            return acc;
+          }, {})
+        );
+
+        dispatch(setBoxData(grouped))
 
         if (result?.length > 1) {
           const lineItem = result?.reduce((acc, curr) => {
@@ -100,7 +114,6 @@ function App() {
       const result = await response?.data
       if (response.status == 200 && result?.length > 0) {
         dispatch(setProducts(result))
-        // toast.success('Products Found !')
       } else {
         toast.error('Products Not Found !')
       }
@@ -204,7 +217,7 @@ function App() {
 
       {productData?.length > 0 ?
         <div className="text-center font-semibold lg:mb-10 mb-4 text-SM text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl ">LINE ITEMS LIST</div>
-        : <hr className="text-[#614119]"/>}
+        : <hr className="text-[#614119]" />}
 
       {
         productData?.length > 0 &&

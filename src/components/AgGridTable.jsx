@@ -18,7 +18,7 @@ const AgGridTable = () => {
     const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
     const productData = useSelector((state) => state?.product?.products);
     const picklistNo = useSelector((state) => state?.product?.picklistNo);
-    const [scanCount, setScanCount] = useState(0);
+    const [scanCount, setScanCount] = useState(0); //set index in bd to scan products continuously after refresh based on picklist
 
     const [colDefs] = useState([
         { field: "barcode_no", headerName: 'Sku', flex: 1, minWidth: 100 },
@@ -38,8 +38,6 @@ const AgGridTable = () => {
     //         gridRef.current.api.applyTransaction({ add: [data], addIndex: 0 });
     //     }
     // };
-
-
 
     const moveRowToTop = (barcode) => {
         const rowNode = gridRef.current.api.getRowNode(barcode);

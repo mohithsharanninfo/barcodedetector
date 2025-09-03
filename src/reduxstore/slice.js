@@ -8,7 +8,8 @@ const initialState = {
   products: [],
   picklistNo: '',
   branchcode: 'BOS',
-  barcodeRender:''
+  barcodeRender:'',
+  viewBoxData: []
 };
 
 const productSlice = createSlice({
@@ -46,6 +47,9 @@ const productSlice = createSlice({
      setBracodeRender: (state, action) => {
       state.barcodeRender = action.payload;
     },
+     setViewBoxData: (state, action) => {
+      state.viewBoxData = action.payload;
+    },
   },
 });
 
@@ -57,7 +61,8 @@ export const {
   setProducts,
   setPicklistNo,
   setBranchCode,
-  setBracodeRender
+  setBracodeRender,
+  setViewBoxData
 } = productSlice.actions;
 
 export default productSlice.reducer;
