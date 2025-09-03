@@ -88,8 +88,8 @@ const Boxdetails = ({ setOpen }) => {
                         columnDefs={colDefs}
                         pagination={true}
                         paginationPageSize={10}
-                        paginationPageSizeSelector={[5, 10, 20, 50, 100]}
-                        //rowSelection="single"
+                        paginationPageSizeSelector={[10, 20, 50, 100]}
+                        rowSelection="single"
                         defaultColDef={{
                             resizable: false,
                             sortable: false,

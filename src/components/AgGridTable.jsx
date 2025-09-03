@@ -28,66 +28,71 @@ const AgGridTable = () => {
     ]);
 
 
-    /////////REQUIRED IF WE WANT TO MOVE THE SCANNED ROW TO TOP //////////
-
-    // const moveRowToTop = (barcode) => {
-    //     const rowNode = gridRef.current.api.getRowNode(barcode);
-    //     if (rowNode) {
-    //         const data = rowNode.data;
-    //         gridRef.current.api.applyTransaction({ remove: [data] });
-    //         gridRef.current.api.applyTransaction({ add: [data], addIndex: 0 });
-    //     }
-    // };
-
     const moveRowToTop = (barcode) => {
-        const rowNode = gridRef.current.api.getRowNode(barcode);
+        const api = gridRef.current.api;
+        const rowNode = api.getRowNode(barcode);
+
         if (rowNode) {
             const data = rowNode.data;
 
             // Remove row from current position
-            gridRef.current.api.applyTransaction({ remove: [data] });
+            api.applyTransaction({ remove: [data] });
 
             // Insert at the "next scanned position"
-            gridRef.current.api.applyTransaction({ add: [data], addIndex: scanCount });
+            api.applyTransaction({ add: [data], addIndex: scanCount });
 
             // Increment counter for next scan
-           setScanCount((prev)=> prev + 1);
+            setScanCount((prev) => {
+                const newIndex = prev; // row inserted at this index
+
+                // 🔑 Find which page that index is on
+                const pageSize = api.paginationGetPageSize();
+                const targetPage = Math.floor(newIndex / pageSize);
+
+                // Switch to that page
+                setTimeout(() => {
+                    api.paginationGoToPage(targetPage);
+
+                    // Ensure row is visible and highlighted
+                    const newRowNode = api.getRowNode(barcode);
+                    if (newRowNode) {
+                        newRowNode.setSelected(true);
+                        api.ensureNodeVisible(newRowNode, "top");
+                    }
+                }, 50);
+
+                return prev + 1;
+            });
         }
     };
 
 
     useEffect(() => {
         if (!barcode || !gridRef.current?.api) return;
-        let rows = productData?.find((item) => item?.barcode_no === barcode)
+
+        const api = gridRef.current.api;
+        const rows = productData?.find((item) => item?.barcode_no === barcode);
 
         if (rows) {
             dispatch(setScannedProducts({ ...rows, picklistNo }));
-        }
-        const api = gridRef.current.api;
-
-        // 1️⃣ Find the index of the target row
-        const targetIndex = productData?.findIndex(row => row?.barcode_no === barcode);
-
-        if (targetIndex !== -1) {
-            const pageSize = api.paginationGetPageSize();
-            const targetPage = Math.floor(targetIndex / pageSize);
-
-            // 2️⃣ Go to the page containing the scanned item
-            api.paginationGoToPage(targetPage);
-
-            // 3️⃣ After small delay, highlight the row
             setTimeout(async () => {
                 const rowNode = api.getRowNode(barcode);
 
                 if (rowNode) {
-                    const exists = await scannedProducts?.some(p => p.barcode_no === rowNode.id);
+                    const exists = scannedProducts?.some(
+                        (p) => p.barcode_no === rowNode.id
+                    );
 
                     if (!exists) {
-                        const currentTime = new Date().toISOString().split('T')[0];
+                        const currentTime = new Date().toISOString().split("T")[0];
+
+                        // ✅ move the scanned row up in order
                         moveRowToTop(barcode);
+
+                        // save in IndexedDB (if you’re using dexie or similar)
                         db.scanned_products?.add({
                             data: { ...rows, picklistNo },
-                            dateTime: currentTime
+                            dateTime: currentTime,
                         });
 
                         toast.success(`${rowNode.id} Product Found!`);
@@ -95,12 +100,13 @@ const AgGridTable = () => {
                         toast.success(`${rowNode.id} Product Already Selected!`);
                     }
 
+                    // ✅ highlight + bring into view
                     rowNode.setSelected(true);
-                    api.ensureNodeVisible(rowNode);
+                    api.ensureNodeVisible(rowNode, "top");
                 }
             }, 100);
         } else {
-            new Audio('/error.mp3').play();
+            new Audio("/error.mp3").play();
             toast.error(`${barcode} Product Not Found!`);
         }
     }, [barcode, rerender]);
@@ -120,7 +126,7 @@ const AgGridTable = () => {
                         getRowId={(params) => params.data.barcode_no}
                         pagination={true}
                         paginationPageSize={10}
-                        paginationPageSizeSelector={[5, 10, 20, 50, 100]}
+                        paginationPageSizeSelector={[10, 20, 50, 100]}
                         getRowClass={(params) => {
                             const rowBarcode = params?.data?.barcode_no;
                             if (!rowBarcode) return ''; // <-- don't highlight if barcode is missing
