@@ -13,7 +13,6 @@ import { BASE_URL } from "./constant";
 import ReactModal from "./components/ReactModal";
 import { useForm } from 'react-hook-form';
 import { FaHandPointRight } from "react-icons/fa";
-import ReloadPrompt from "../ReloadPrompt";
 
 
 function App() {
