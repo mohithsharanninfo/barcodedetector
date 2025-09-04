@@ -85,6 +85,7 @@ function App() {
         }
       }
     } catch (err) {
+       toast.error('Please try again !')
       throw new Error(err)
     }
     finally {
@@ -119,6 +120,7 @@ function App() {
         toast.error('Products Not Found !')
       }
     } catch (err) {
+      toast.error('Please try again !')
       throw new Error(err)
     } finally {
       setDetailsLoading(false)
@@ -199,9 +201,9 @@ function App() {
 
   return (
     <div className="">
-      <div className="text-center font-semibold lg:mb-10 mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE SCANNER</div>
-     <UpdateNotifier/>
-      <div className="flex items-center justify-center lg:my-5 mt-8 mb-4  ">
+      <div className="text-center font-semibold  mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE SCANNER</div>
+      <UpdateNotifier />
+      <div className="flex items-center justify-center lg:my-5  mb-4  ">
         <Boxdetails setOpen={setOpen} />
       </div>
       <div className="flex justify-between items-center mb-4">

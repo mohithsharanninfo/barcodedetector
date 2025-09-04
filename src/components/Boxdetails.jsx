@@ -8,6 +8,7 @@ import axios from 'axios';
 import { BASE_URL } from '../constant';
 import ReactModal from './ReactModal';
 import ViewBoxTable from './ViewBoxTable';
+import { FaHandPointRight } from "react-icons/fa";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -41,6 +42,7 @@ const Boxdetails = ({ setOpen }) => {
                 toast.error('Items Not Found !')
             }
         } catch (err) {
+             toast.error('Please try again !')
             throw new Error(err)
         }
         setModelOpen(true)
@@ -55,7 +57,7 @@ const Boxdetails = ({ setOpen }) => {
             flex: 1,
             minWidth: 130,
             cellRenderer: (params) => (
-               <p  onClick={() => handleViewClick(params)} className='cursor-pointer underline'>View Box</p> 
+                <p onClick={() => handleViewClick(params)} className='cursor-pointer underline'>View Box</p>
             )
         }
     ], [payload?.branchcode, payload?.picklistNo]);
@@ -65,8 +67,9 @@ const Boxdetails = ({ setOpen }) => {
     }
 
     return (
-        <>
-            <div className="ag-theme-alpine w-full overflow-x-auto">
+        <div className='w-full '>
+
+            <div className='lg:hidden block'>
                 <div className='flex justify-between items-center'>
                     <p className='text-start text-[#614119] font-semibold px-1 my-3'>Picklist No:</p>
                     <input readOnly placeholder='Picklist' className='text-center border font-bold cursor-not-allowed  border-[#614119] py-1 bg-gray-300 outline-none' value={payload?.picklistNo} />
@@ -79,31 +82,45 @@ const Boxdetails = ({ setOpen }) => {
                         dispatch(setProducts([]))
                     }} className='text-start text-[#614119] cursor-pointer underline font-semibold px-1'>Enter Picklist No.</p>
                 </div>
+            </div>
 
-                <div className='w-full'>
-                    <AgGridReact
-                        ref={gridRef}
-                        rowHeight={35}
-                        rowData={tableData}
-                        columnDefs={colDefs}
-                        pagination={true}
-                        paginationPageSize={10}
-                        paginationPageSizeSelector={[10, 20, 50, 100]}
-                        rowSelection="single"
-                        defaultColDef={{
-                            resizable: false,
-                            sortable: false,
-                            filter: false,
-                            suppressMovable: true,
-                            cellStyle: {
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }
-                        }}
-                        domLayout="autoHeight"
-                    />
+            <div className=" flex-row justify-between text-[#614119] lg:flex hidden">
+                <div className='flex gap-x-2'>
+                    <p className="font-bold">Box Count:&nbsp;{boxData?.length}</p>{'|'}
+                    <p className="font-bold ">Picklist No:&nbsp;{payload?.picklistNo}</p>
                 </div>
+                <div>
+                    <p onClick={() => {
+                        setOpen(true)
+                        dispatch(setProducts([]))
+                    }} className="font-bold text-[#614119] cursor-pointer underline flex gap-x-2 items-center "><FaHandPointRight /> Enter Picklist No.</p>
+                </div>
+            </div>
+            <div className="ag-theme-alpine w-full overflow-x-auto">
+
+                <AgGridReact
+                    ref={gridRef}
+                    rowHeight={35}
+                    rowData={tableData}
+                    columnDefs={colDefs}
+                    pagination={true}
+                    paginationPageSize={10}
+                    paginationPageSizeSelector={[10, 20, 50, 100]}
+                    rowSelection="single"
+                    defaultColDef={{
+                        resizable: false,
+                        sortable: false,
+                        filter: false,
+                        suppressMovable: true,
+                        cellStyle: {
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }
+                    }}
+                    domLayout="autoHeight"
+                />
+
             </div>
 
             <ReactModal modalIsOpen={modelOpen} closeModal={closeModal} >
@@ -111,7 +128,7 @@ const Boxdetails = ({ setOpen }) => {
                     <ViewBoxTable />
                 </div>
             </ReactModal>
-        </>
+        </div>
     );
 };
 
