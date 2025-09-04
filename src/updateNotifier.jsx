@@ -12,13 +12,13 @@ function UpdateNotifier() {
   if (!updateAvailable) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 bg-yellow-500 text-white px-4 py-2 rounded shadow-lg z-50 flex items-center">
+    <div className=" bg-yellow-500 w-fit text-white px-2 py-1 rounded shadow-lg z-50 flex items-center">
       New updates available!
       <button
-        className="ml-2 bg-white text-yellow-600 px-2 py-1 rounded cursor-pointer"
+        className="ml-2 bg-white text-yellow-600 px-2  rounded cursor-pointer"
         onClick={() => window.location.reload()}
       >
-         Update
+        Update
       </button>
     </div>
   );

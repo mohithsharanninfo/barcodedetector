@@ -68,7 +68,6 @@ const Boxdetails = ({ setOpen }) => {
 
     return (
         <div className='w-full '>
-
             <div className='lg:hidden block'>
                 <div className='flex justify-between items-center'>
                     <p className='text-start text-[#614119] font-semibold px-1 my-3'>Picklist No:</p>

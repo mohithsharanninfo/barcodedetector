@@ -1,4 +1,3 @@
-import getScannedProductsByDate from "./api/fetchDexie";
 import AgGridTable from "./components/AgGridTable";
 import BarcodeDetect from "./components/BarcodeDetect";
 import Boxdetails from "./components/Boxdetails";
@@ -14,6 +13,7 @@ import ReactModal from "./components/ReactModal";
 import { useForm } from 'react-hook-form';
 import { FaHandPointRight } from "react-icons/fa";
 import UpdateNotifier from "./updateNotifier";
+import getScannedProductsByRange from "./api/fetchDexie";
 
 
 function App() {
@@ -95,16 +95,32 @@ function App() {
   }
 
   const fetchTodayScannedData = async () => {
-    //db.scanned_products.clear();  
-    const today = new Date().toISOString().split('T')[0];
-    const scannedToday = await getScannedProductsByDate(today);
-    const filterPicklist = scannedToday?.filter((item) => item?.data?.picklistNo == payload?.picklistNo)
-    if (filterPicklist?.length > 0) {
-      filterPicklist.map((item) => dispatch(setScannedProducts(item?.data)))
-    } else {
-      toast.error(`No scanned products found!`);
-    }
-  };
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  const formatDateTime = (d) => d.toISOString(); // full timestamp
+  const formatDateOnly = (d) => d.toISOString().split("T")[0]; // just date
+
+  const start = formatDateOnly(yesterday); // e.g. "2025-09-03"
+  const end = formatDateOnly(today);       // e.g. "2025-09-04"
+
+  // add "T00:00:00" and "T23:59:59" to cover entire days
+  const startDateTime = `${start}T00:00:00`;
+  const endDateTime = `${end}T23:59:59`;
+
+  const scannedRange = await getScannedProductsByRange(startDateTime, endDateTime);
+
+  const filterPicklist = scannedRange?.filter(
+    (item) => item?.data?.picklistNo === payload?.picklistNo
+  );
+
+  if (filterPicklist?.length > 0) {
+    filterPicklist.forEach((item) => dispatch(setScannedProducts(item?.data)));
+  } else {
+    toast.error("No scanned products found!");
+  }
+};
 
   const handleViewClick = async () => {
     setDetailsLoading(true)
@@ -203,7 +219,7 @@ function App() {
     <div className="">
       <div className="text-center font-semibold  mb-4 text-lg text-white [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] shadow-2xl py-2 ">BARCODE SCANNER</div>
       <UpdateNotifier />
-      <div className="flex items-center justify-center lg:my-5  mb-4  ">
+      <div className="flex items-center justify-center lg:my-5 mb-4">
         <Boxdetails setOpen={setOpen} />
       </div>
       <div className="flex justify-between items-center mb-4">

@@ -122,7 +122,6 @@ const AgGridTable = () => {
                         rowHeight={35}
                         rowData={productData}
                         columnDefs={colDefs}
-                        //rowSelection={{ type: 'single' }}
                         getRowId={(params) => params.data.barcode_no}
                         pagination={true}
                         paginationPageSize={10}

@@ -5,12 +5,15 @@ import toast from 'react-hot-toast';
 import { GoArrowRight } from "react-icons/go";
 const ExportToPdf = () => {
     const scannedProducts = useSelector((state) => state?.product?.scannedProducts);
+    const picklist = useSelector((state) => state?.product?.picklistNo);
+    const filteredProducts = scannedProducts?.filter((val => val?.picklistNo === picklist));
+
     const exportDataPdf = async () => {
         try {
             const doc = new jsPDF();
             doc.text("Product List", 14, 10);
-            const tableColumn = ["SKU", "GS Code", "Item", "Box","Picklist No"];
-            const tableRows = scannedProducts?.map((item) => [
+            const tableColumn = ["SKU", "GS Code", "Item", "Box", "Picklist No"];
+            const tableRows = scannedProducts.filter((val => val?.picklistNo === picklist))?.map((item) => [
                 item?.barcode_no,
                 item?.gs_code,
                 item?.item_name,
@@ -37,8 +40,8 @@ const ExportToPdf = () => {
     return (
         <div>
             <div className='flex justify-between items-center'>
-                <p className='text-[#614119] font-semibold'>Export Scanned Products List<GoArrowRight/></p>
-                  <button disabled={scannedProducts?.length <= 0 ? true : false} onClick={() => exportDataPdf()} className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm  ${scannedProducts?.length <= 0 ? "cursor-not-allowed opacity-50" : 'cursor-pointer'}`}>Export PDF</button>
+                <p className='text-[#614119] font-semibold'>Scanned Products Export (Picklist-Wise) <GoArrowRight /></p>
+                <button disabled={filteredProducts?.length <= 0 ? true : false} onClick={() => exportDataPdf()} className={`px-3 py-2 [background:linear-gradient(103.45deg,_rgb(97,65,25)_-11.68%,_rgb(205,154,80)_48.54%,_rgb(97,65,25)_108.76%)] text-amber-50 rounded-sm  ${filteredProducts?.length <= 0 ? "cursor-not-allowed opacity-50" : 'cursor-pointer'}`}>Export PDF</button>
             </div>
         </div>
     )

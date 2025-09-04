@@ -1,8 +1,11 @@
 import db from "../utils/db";
 
-const getScannedProductsByDate = async (date) => {
-    const allItems = await db.scanned_products.toArray();
-    return allItems?.filter(item => item?.dateTime.startsWith(date));
+// date format: "YYYY-MM-DD"
+const getScannedProductsByRange = async (startDate, endDate) => {
+  return db.scanned_products
+    .where("dateTime")
+    .between(startDate, endDate, true, true) // inclusive range
+    .toArray();
 };
 
-export default getScannedProductsByDate
+export default getScannedProductsByRange;
