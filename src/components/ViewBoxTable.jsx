@@ -14,8 +14,7 @@ const ViewBoxTable = () => {
         { field: "box_no", headerName: 'Box', flex: 1, minWidth: 100 },
     ]);
     return (
-        <div className="ag-theme-alpine w-full overflow-x-auto">
-            <div className='w-full '>
+        <div className="ag-theme-alpine w-full overflow-x-auto h-[420px] max-h-[420px] overflow-y-auto">
                 <AgGridReact
                     rowHeight={35}
                     rowData={viewboxdetails}
@@ -23,7 +22,7 @@ const ViewBoxTable = () => {
                     getRowId={(params) => params.data.barcode_no}
                     pagination={true}
                     paginationPageSize={10}
-                    paginationPageSizeSelector={[5, 10, 20, 50, 100]}
+                    paginationPageSizeSelector={[ 10, 20, 50, 100]}
                     getRowClass={(params) => {
                         const rowBarcode = params?.data?.barcode_no;
                         if (!rowBarcode) return ''; // <-- don't highlight if barcode is missing
@@ -38,10 +37,8 @@ const ViewBoxTable = () => {
                         suppressMovable: true,
                         cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' }
                     }}
-                    domLayout="autoHeight"
                 />
             </div>
-        </div>
     )
 }
 
